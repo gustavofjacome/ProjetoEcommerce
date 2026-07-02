@@ -1,0 +1,111 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package "Interfaces" {
+    interface Pagavel {
+        + calcularTotal(): BigDecimal
+        + processarPagamento(): void
+    }
+}
+
+package "Domínio (Entidades Principais)" {
+
+    abstract class Usuario {
+        - id: Long
+        - nome: String
+        - email: String
+        - senha: String
+        + fazerLogin(): boolean
+    }
+
+    class Cliente extends Usuario {
+        - cpf: String
+        - telefone: String
+        - carrinho: CarrinhoDeCompras
+    }
+
+    class Administrador extends Usuario {
+        - codigoCracha: String
+        - nivelAcesso: String
+    }
+
+    class Produto {
+        - id: Long
+        - nome: String
+        - descricao: String
+        - preco: BigDecimal
+        - quantidadeEstoque: Integer
+        - categoria: String
+        + temEstoque(qtd: Integer): boolean
+        + reduzirEstoque(qtd: Integer): void
+    }
+
+    class CarrinhoDeCompras {
+        - id: Long
+        - itens: List<ItemPedido>
+        + adicionarItem(produto: Produto, qtd: Integer): void
+        + removerItem(produto: Produto): void
+        + calcularTotal(): BigDecimal
+        + esvaziar(): void
+    }
+
+    class ItemPedido {
+        - produto: Produto
+        - quantidade: Integer
+        - precoUnitario: BigDecimal
+        + calcularSubtotal(): BigDecimal
+    }
+
+    class Pedido implements Pagavel {
+        - id: Long
+        - dataPedido: LocalDateTime
+        - status: StatusPedido
+        - cliente: Cliente
+        - itens: List<ItemPedido>
+        - totalPagamento: BigDecimal
+        + fecharPedido(): void
+        + calcularTotal(): BigDecimal
+        + processarPagamento(): void
+    }
+
+    enum StatusPedido {
+        AGUARDANDO_PAGAMENTO
+        PAGO
+        EM_SEPARACAO
+        ENVIADO
+        ENTREGUE
+        CANCELADO
+    }
+}
+
+package "Records (DTOs)" {
+    class ClienteRegistroDTO << (R, #FF7700) record >> {
+        + nome: String
+        + email: String
+        + cpf: String
+        + senhaAcesso: String
+    }
+
+    class EnderecoDTO << (R, #FF7700) record >> {
+        + cep: String
+        + logradouro: String
+        + numero: String
+        + cidade: String
+        + estado: String
+    }
+}
+
+package "Exceções" {
+    class EstoqueInsuficienteException extends Exception {}
+    class CarrinhoVazioException extends Exception {}
+    class ProdutoNaoEncontradoException extends Exception {}
+}
+
+' Relacionamentos
+Cliente "1" *-- "1" CarrinhoDeCompras : possui
+CarrinhoDeCompras "1" *-- "*" ItemPedido : contem
+Pedido "1" *-- "*" ItemPedido : contem
+Pedido "*" -- "1" Cliente : pertence a
+ItemPedido "*" -- "1" Produto : refere-se a
+
+@enduml
