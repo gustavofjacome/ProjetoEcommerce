@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04858eba-7c5d-482a-85e6-fe72a4f1e40a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/exception/EstoqueInsuficienteException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/model/Administrador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/model/Cliente.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/model/ItemPedido.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/model/NivelAcesso.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/model/Produto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/ecommerce/project/model/StatusPedido.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/diagramaUML.plantuml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/diagramaUML.plantuml" afterDir="false" />
-    </list>
+    <list default="true" id="04858eba-7c5d-482a-85e6-fe72a4f1e40a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,7 +76,7 @@
       <updated>1782954229197</updated>
       <workItem from="1782954230849" duration="102000" />
       <workItem from="1783036260195" duration="110000" />
-      <workItem from="1783036386374" duration="3329000" />
+      <workItem from="1783036386374" duration="3940000" />
     </task>
     <servers />
   </component>
