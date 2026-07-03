@@ -76,6 +76,12 @@ package "Domínio (Entidades Principais)" {
         ENTREGUE
         CANCELADO
     }
+
+    enum NivelAcesso {
+            ADMIN_TOTAL,
+            GERENTE,
+            SUPORTE_CLIENTE
+        }
 }
 
 package "Records (DTOs)" {
