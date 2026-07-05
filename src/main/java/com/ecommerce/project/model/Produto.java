@@ -1,12 +1,21 @@
 package com.ecommerce.project.model;
 
 import com.ecommerce.project.exception.EstoqueInsuficienteException;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
+@Entity
 public class Produto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String descricao;
     private BigDecimal preco;
@@ -16,8 +25,7 @@ public class Produto {
     public Produto() {
     }
 
-    public Produto(Long id, String nome, String descricao, BigDecimal preco, Integer quantidadeEstoque, String categoria) {
-        this.id = id;
+    public Produto(String nome, String descricao, BigDecimal preco, Integer quantidadeEstoque, String categoria) {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;

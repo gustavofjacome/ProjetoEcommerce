@@ -1,9 +1,18 @@
 package com.ecommerce.project.model;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
+@Entity
 public class ItemPedido {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @ManyToOne
     private Produto produto;
+
     private Integer quantidade;
     private BigDecimal precoUnitario;
 
@@ -14,6 +23,14 @@ public class ItemPedido {
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Produto getProduto() {

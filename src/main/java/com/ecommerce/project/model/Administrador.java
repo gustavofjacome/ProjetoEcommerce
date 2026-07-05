@@ -1,17 +1,19 @@
 package com.ecommerce.project.model;
 
+import jakarta.persistence.Entity;
+
+
+@Entity
 public class Administrador extends Usuario {
 
     private String codigoCracha;
     private NivelAcesso nivelAcesso;
 
-    public Administrador(String codigoCracha, NivelAcesso nivelAcesso) {
-        this.codigoCracha = codigoCracha;
-        this.nivelAcesso = nivelAcesso;
+    public Administrador() {
     }
 
-    public Administrador(long id, String nome, String email, String senha, String codigoCracha, NivelAcesso nivelAcesso) {
-        super(id, nome, email, senha);
+    public Administrador(String nome, String email, String senha, String codigoCracha, NivelAcesso nivelAcesso) {
+        super(nome, email, senha);
         this.codigoCracha = codigoCracha;
         this.nivelAcesso = nivelAcesso;
     }

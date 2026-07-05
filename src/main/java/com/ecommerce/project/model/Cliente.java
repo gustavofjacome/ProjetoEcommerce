@@ -1,15 +1,21 @@
 package com.ecommerce.project.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+
+@Entity
 public class Cliente extends Usuario{
     private String cpf;
     private String telefone;
+
+    @OneToOne
     private CarrinhoDeCompras carrinho;
 
     public Cliente() {
     }
 
-    public Cliente(long id, String nome, String email, String senha, String cpf, String telefone, CarrinhoDeCompras carrinho) {
-        super(id, nome, email, senha);
+    public Cliente(String nome, String email, String senha, String cpf, String telefone, CarrinhoDeCompras carrinho) {
+        super(nome, email, senha);
         this.cpf = cpf;
         this.telefone = telefone;
         this.carrinho = carrinho;
