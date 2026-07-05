@@ -1,23 +1,33 @@
 package com.ecommerce.project.model;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Pedido implements Pagavel{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime dataPedido;
     private StatusPedido status;
+
+    @ManyToOne
     private Cliente cliente;
+
+    @OneToMany
     private List<ItemPedido> itens = new ArrayList<>();
+
     private BigDecimal totalPagamento;
 
     public Pedido() {
     }
 
-    public Pedido(Long id, LocalDateTime dataPedido, StatusPedido status, Cliente cliente, List<ItemPedido> itens, BigDecimal totalPagamento) {
-        this.id = id;
+    public Pedido(LocalDateTime dataPedido, StatusPedido status, Cliente cliente, List<ItemPedido> itens, BigDecimal totalPagamento) {
         this.dataPedido = dataPedido;
         this.status = status;
         this.cliente = cliente;
