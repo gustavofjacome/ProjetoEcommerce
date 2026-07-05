@@ -40,5 +40,7 @@ public class ItemPedido {
         this.precoUnitario = precoUnitario;
     }
 
-    //todo: implementar a função que falta
+    public BigDecimal calcularSubtotal(){
+        return this.precoUnitario.multiply(new BigDecimal(this.quantidade));
+    }
 }
