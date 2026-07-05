@@ -1,18 +1,24 @@
 package com.ecommerce.project.model;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class CarrinhoDeCompras {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany
     private List<ItemPedido> itens = new ArrayList<>();
 
     public CarrinhoDeCompras() {
     }
 
-    public CarrinhoDeCompras(Long id, List<ItemPedido> itens) {
-        this.id = id;
+    public CarrinhoDeCompras(List<ItemPedido> itens) {
         this.itens = itens;
     }
 
