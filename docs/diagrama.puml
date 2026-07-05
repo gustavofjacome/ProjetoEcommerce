@@ -1,0 +1,281 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+
+' ═══════════════════════════════════════════
+' INTERFACES
+' ═══════════════════════════════════════════
+package "Interfaces" {
+    interface Pagavel {
+        + calcularTotal(): BigDecimal
+        + processarPagamento(): void
+    }
+}
+
+' ═══════════════════════════════════════════
+' CONTROLADORES REST
+' ═══════════════════════════════════════════
+package "Controladores (REST)" {
+
+    class ProdutoController {
+        + listarTodos(): List<ProdutoResponseDTO>
+        + buscarPorId(id: Long): ProdutoResponseDTO
+        + criar(dto: ProdutoRequestDTO): ProdutoResponseDTO
+    }
+
+    class UsuarioController {
+        + cadastrarCliente(dto: ClienteRegistroDTO): ClienteResponseDTO
+        + buscarPorId(id: Long): UsuarioResponseDTO
+    }
+
+    class PedidoController {
+        + finalizarPedido(dto: PedidoRequestDTO): PedidoResponseDTO
+        + buscarPorId(id: Long): PedidoResponseDTO
+    }
+}
+
+' ═══════════════════════════════════════════
+' SERVIÇOS (REGRAS DE NEGÓCIO)
+' ═══════════════════════════════════════════
+package "Serviços" {
+
+    class ProdutoService {
+        + listarTodos(): List<ProdutoResponseDTO>
+        + buscarPorId(id: Long): ProdutoResponseDTO
+        + salvar(dto: ProdutoRequestDTO): ProdutoResponseDTO
+    }
+
+    class UsuarioService {
+        + cadastrarCliente(dto: ClienteRegistroDTO): ClienteResponseDTO
+        + buscarPorId(id: Long): UsuarioResponseDTO
+    }
+
+    class PedidoService {
+        + finalizarPedido(dto: PedidoRequestDTO): PedidoResponseDTO
+        + buscarPorId(id: Long): PedidoResponseDTO
+    }
+}
+
+' ═══════════════════════════════════════════
+' REPOSITÓRIOS (ACESSO A DADOS)
+' ═══════════════════════════════════════════
+package "Repositórios" {
+
+    interface ProdutoRepository
+    interface UsuarioRepository
+    interface PedidoRepository
+    interface ItemPedidoRepository
+}
+
+' ═══════════════════════════════════════════
+' DOMÍNIO
+' ═══════════════════════════════════════════
+package "Domínio (Entidades Principais)" {
+
+    abstract class Usuario {
+        - id: Long
+        - nome: String
+        - email: String
+        - senha: String
+        + fazerLogin(email: String, senha: String): boolean
+    }
+
+    class Cliente extends Usuario {
+        - cpf: String
+        - telefone: String
+        - endereco: Endereco
+        - carrinho: CarrinhoDeCompras
+    }
+
+    class Administrador extends Usuario {
+        - codigoCracha: String
+        - nivelAcesso: NivelAcesso
+    }
+
+    class Endereco <<embeddable>> {
+        - rua: String
+        - numero: String
+        - bairro: String
+        - cep: String
+    }
+
+    class Produto {
+        - id: Long
+        - nome: String
+        - descricao: String
+        - preco: BigDecimal
+        - quantidadeEstoque: Integer
+        - categoria: String
+        + temEstoque(qtd: Integer): boolean
+        + reduzirEstoque(qtd: Integer): void
+    }
+
+    class CarrinhoDeCompras {
+        - id: Long
+        - itens: List<ItemPedido>
+        + adicionarItem(produto: Produto, qtd: Integer): void
+        + removerItem(produto: Produto): void
+        + calcularTotal(): BigDecimal
+        + esvaziar(): void
+    }
+
+    class ItemPedido {
+        - id: Long
+        - pedido: Pedido
+        - produto: Produto
+        - quantidade: Integer
+        - precoUnitario: BigDecimal
+        + calcularSubtotal(): BigDecimal
+    }
+
+    class Pedido implements Pagavel {
+        - id: Long
+        - dataPedido: LocalDateTime
+        - status: StatusPedido
+        - cliente: Cliente
+        - itens: List<ItemPedido>
+        - totalPagamento: BigDecimal
+        + fecharPedido(): void
+        + calcularTotal(): BigDecimal
+        + processarPagamento(): void
+    }
+
+    enum StatusPedido {
+        AGUARDANDO_PAGAMENTO
+        PAGO
+        EM_SEPARACAO
+        ENVIADO
+        ENTREGUE
+        CANCELADO
+    }
+
+    enum NivelAcesso {
+        ADMIN_TOTAL
+        GERENTE
+        SUPORTE_CLIENTE
+    }
+}
+
+' ═══════════════════════════════════════════
+' DTOs
+' ═══════════════════════════════════════════
+package "Records (DTOs)" {
+
+    class ClienteRegistroDTO << (R, #FF7700) record >> {
+        + nome: String
+        + email: String
+        + senha: String
+        + cpf: String
+        + telefone: String
+        + endereco: EnderecoDTO
+    }
+
+    class EnderecoDTO << (R, #FF7700) record >> {
+        + rua: String
+        + numero: String
+        + bairro: String
+        + cep: String
+    }
+
+    class ProdutoRequestDTO << (R, #FF7700) record >> {
+        + nome: String
+        + descricao: String
+        + preco: BigDecimal
+        + quantidadeEstoque: Integer
+        + categoria: String
+    }
+
+    class ItemPedidoRequestDTO << (R, #FF7700) record >> {
+        + produtoId: Long
+        + quantidade: Integer
+    }
+
+    class PedidoRequestDTO << (R, #FF7700) record >> {
+        + clienteId: Long
+        + itens: List<ItemPedidoRequestDTO>
+    }
+
+    class UsuarioResponseDTO << (R, #FF7700) record >> {
+        + id: Long
+        + nome: String
+        + email: String
+        + nivelAcesso: NivelAcesso
+    }
+
+    class ClienteResponseDTO << (R, #FF7700) record >> {
+        + id: Long
+        + nome: String
+        + email: String
+    }
+
+    class ProdutoResponseDTO << (R, #FF7700) record >> {
+        + id: Long
+        + nome: String
+        + descricao: String
+        + preco: BigDecimal
+        + quantidadeEstoque: Integer
+        + categoria: String
+    }
+
+    class ItemPedidoResponseDTO << (R, #FF7700) record >> {
+        + id: Long
+        + produtoNome: String
+        + quantidade: Integer
+        + precoUnitario: BigDecimal
+        + subtotal: BigDecimal
+    }
+
+    class PedidoResponseDTO << (R, #FF7700) record >> {
+        + id: Long
+        + dataPedido: LocalDateTime
+        + status: StatusPedido
+        + clienteId: Long
+        + clienteNome: String
+        + itens: List<ItemPedidoResponseDTO>
+        + totalPagamento: BigDecimal
+    }
+}
+
+' ═══════════════════════════════════════════
+' EXCEÇÕES
+' ═══════════════════════════════════════════
+package "Exceções" {
+    class GlobalExceptionHandler {
+        + handleCarrinhoVazio(ex: CarrinhoVazioException): ResponseEntity
+        + handleProdutoNaoEncontrado(ex: ProdutoNaoEncontradoException): ResponseEntity
+        + handleUsuarioInvalido(ex: UsuarioInvalidoException): ResponseEntity
+        + handleEstoqueInsuficiente(ex: EstoqueInsuficienteException): ResponseEntity
+        + handleClienteNaoInformado(ex: ClienteNaoInformadoException): ResponseEntity
+        + handlePedidoNaoEncontrado(ex: PedidoNaoEncontradoException): ResponseEntity
+    }
+
+    class EstoqueInsuficienteException extends RuntimeException {}
+    class CarrinhoVazioException extends RuntimeException {}
+    class ProdutoNaoEncontradoException extends RuntimeException {}
+    class PedidoNaoEncontradoException extends RuntimeException {}
+    class UsuarioInvalidoException extends RuntimeException {}
+    class ClienteNaoInformadoException extends RuntimeException {}
+}
+
+' ═══════════════════════════════════════════
+' RELACIONAMENTOS DO DOMÍNIO
+' ═══════════════════════════════════════════
+Cliente "1" *-- "1" CarrinhoDeCompras : possui
+Cliente "1" *-- "1" Endereco : embeddable
+CarrinhoDeCompras "1" *-- "*" ItemPedido : contem
+Pedido "1" *-- "*" ItemPedido : contem
+Pedido "*" -- "1" Cliente : pertence a
+ItemPedido "*" -- "1" Produto : refere-se a
+
+' ═══════════════════════════════════════════
+' RELACIONAMENTOS ENTRE CAMADAS
+' ═══════════════════════════════════════════
+ProdutoController --> ProdutoService
+UsuarioController --> UsuarioService
+PedidoController --> PedidoService
+
+ProdutoService --> ProdutoRepository
+UsuarioService --> UsuarioRepository
+PedidoService --> PedidoRepository
+
+@enduml
