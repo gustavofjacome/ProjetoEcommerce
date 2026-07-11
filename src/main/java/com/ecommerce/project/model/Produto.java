@@ -7,9 +7,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 
+/**
+ * Representa um produto disponível para venda no e-commerce.
+ * Cada produto possui nome, descrição, preço, quantidade em estoque
+ * e uma categoria para organização.
+ */
 @Entity
 public class Produto {
     @Id
@@ -25,6 +29,13 @@ public class Produto {
     public Produto() {
     }
 
+    /**
+     * @param nome             nome do produto
+     * @param descricao        descrição detalhada do produto
+     * @param preco            preço unitário
+     * @param quantidadeEstoque quantidade disponível em estoque
+     * @param categoria        categoria do produto (ex: eletrônicos, roupas)
+     */
     public Produto(String nome, String descricao, BigDecimal preco, Integer quantidadeEstoque, String categoria) {
         this.nome = nome;
         this.descricao = descricao;
@@ -39,7 +50,6 @@ public class Produto {
 
     public void setId(Long id) {
         this.id = id;
-        // se pá nem precisa disso, criei por costume.todo: Revisar no final
     }
 
     public String getNome() {
@@ -82,10 +92,23 @@ public class Produto {
         this.categoria = categoria;
     }
 
+    /**
+     * Verifica se há estoque suficiente para atender uma determinada quantidade.
+     *
+     * @param qtd quantidade desejada
+     * @return {@code true} se o estoque atual for maior ou igual à quantidade
+     */
     public boolean temEstoque(Integer qtd){
         return quantidadeEstoque >= qtd;
     }
 
+    /**
+     * Reduz a quantidade em estoque após uma venda.
+     * Caso o estoque seja insuficiente, lança uma exceção.
+     *
+     * @param qtd quantidade a ser reduzida do estoque
+     * @throws EstoqueInsuficienteException se não houver estoque suficiente
+     */
     public void reduzirEstoque(Integer qtd){
         if (temEstoque(qtd)){
             quantidadeEstoque -= qtd;

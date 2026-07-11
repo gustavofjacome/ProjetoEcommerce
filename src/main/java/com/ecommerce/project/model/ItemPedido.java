@@ -4,11 +4,20 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Representa um item individual dentro de um pedido ou carrinho.
+ * Associa um {@link Produto} a uma quantidade e um preço unitário
+ * no momento da compra, garantindo o valor mesmo que o produto
+ * mude de preço depois.
+ */
 @Entity
 public class ItemPedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    @ManyToOne
+    private Pedido pedido;
 
     @ManyToOne
     private Produto produto;
@@ -19,18 +28,31 @@ public class ItemPedido {
     public ItemPedido() {
     }
 
+    /**
+     * @param produto      produto comprado
+     * @param quantidade   quantidade comprada
+     * @param precoUnitario preço unitário no momento da compra
+     */
     public ItemPedido(Produto produto, Integer quantidade, BigDecimal precoUnitario) {
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public Produto getProduto() {
@@ -57,6 +79,11 @@ public class ItemPedido {
         this.precoUnitario = precoUnitario;
     }
 
+    /**
+     * Calcula o subtotal do item (quantidade * preço unitário).
+     *
+     * @return valor total deste item
+     */
     public BigDecimal calcularSubtotal(){
         return this.precoUnitario.multiply(new BigDecimal(this.quantidade));
     }

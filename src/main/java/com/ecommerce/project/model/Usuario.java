@@ -2,12 +2,18 @@ package com.ecommerce.project.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Classe abstrata que representa um usuário genérico do sistema.
+ * Serve como base para as hierarquias de {@link Cliente} e {@link Administrador}.
+ * Utiliza herança com estratégia JOINED para manter tabelas separadas
+ * mas relacionadas no banco.
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String nome;
     private String email;
@@ -16,17 +22,22 @@ public abstract class Usuario {
     public Usuario() {
     }
 
+    /**
+     * @param nome  nome completo do usuário
+     * @param email e-mail para login
+     * @param senha senha de acesso
+     */
     public Usuario(String nome, String email, String senha) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,8 +65,15 @@ public abstract class Usuario {
         this.senha = senha;
     }
 
-    boolean fazerLogin(String email, String senha){
+    /**
+     * Tenta autenticar o usuário comparando e-mail e senha fornecidos
+     * com os dados armazenados.
+     *
+     * @param email e-mail informado no login
+     * @param senha senha informada no login
+     * @return {@code true} se as credenciais coincidirem, {@code false} caso contrário
+     */
+    public boolean fazerLogin(String email, String senha){
         return (this.email.equals(email) && this.senha.equals(senha));
-        // o retorno ja vai ser verdadeiro ou falso;
     }
 }
