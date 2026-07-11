@@ -7,6 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representa um pedido fechado por um {@link Cliente}.
+ * Implementa a interface {@link Pagavel} e gerencia o ciclo de vida
+ * do pedido, desde a criação até o processamento do pagamento.
+ * Cada pedido possui uma lista de itens, status e valor total.
+ */
 @Entity
 public class Pedido implements Pagavel{
     @Id
@@ -14,12 +20,14 @@ public class Pedido implements Pagavel{
     private Long id;
 
     private LocalDateTime dataPedido;
+
+    @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
     @ManyToOne
     private Cliente cliente;
 
-    @OneToMany
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
     private BigDecimal totalPagamento;
@@ -27,6 +35,13 @@ public class Pedido implements Pagavel{
     public Pedido() {
     }
 
+    /**
+     * @param dataPedido     data e hora em que o pedido foi realizado
+     * @param status         status atual do pedido
+     * @param cliente        cliente que fez o pedido
+     * @param itens          itens do pedido
+     * @param totalPagamento valor total a ser pago
+     */
     public Pedido(LocalDateTime dataPedido, StatusPedido status, Cliente cliente, List<ItemPedido> itens, BigDecimal totalPagamento) {
         this.dataPedido = dataPedido;
         this.status = status;
@@ -83,18 +98,31 @@ public class Pedido implements Pagavel{
         this.totalPagamento = totalPagamento;
     }
 
+    /**
+     * Finaliza o pedido definindo a data atual, alterando o status
+     * para AGUARDANDO_PAGAMENTO e calculando o total com base nos itens.
+     */
     public void fecharPedido(){
         this.dataPedido = LocalDateTime.now();
         this.status = StatusPedido.AGUARDANDO_PAGAMENTO;
         this.totalPagamento = this.calcularTotal();
     }
 
+    /**
+     * Calcula o valor total do pedido somando os subtotais de todos os itens.
+     *
+     * @return total do pedido
+     */
     @Override
     public BigDecimal calcularTotal(){
         return itens.stream()
                 .map(ItemPedido::calcularSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    /**
+     * Processa o pagamento do pedido, alterando o status para PAGO.
+     */
     @Override
     public void processarPagamento(){
         this.status = StatusPedido.PAGO;
